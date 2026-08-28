@@ -2,7 +2,7 @@
 
 My personal portfolio site. Hand-built with vanilla HTML, CSS, and JavaScript — no frameworks, no build step, no dependencies.
 
-**Live:** [knicolosi313.github.io](https://knicolosi313.github.io)
+**Live:** [keithnicolosi.com](https://keithnicolosi.com)
 
 ![Keith Nicolosi — Software Engineer](images/og-image.png)
 
