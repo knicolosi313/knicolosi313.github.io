@@ -9,7 +9,7 @@ document.documentElement.classList.add('js');
     /* ── Reveal on scroll ──────────────────────────
        Above-the-fold content animates in on load without
        needing IntersectionObserver. Everything below waits
-       for scroll — but if IO never reports back (suspended
+       for scroll, but if IO never reports back (suspended
        rendering, prerender, an unsupported engine) a
        failsafe reveals it, so the page is never left blank. */
 
@@ -49,7 +49,7 @@ document.documentElement.classList.add('js');
             deferred.forEach(function (el) { revealObserver.observe(el); });
 
             // A healthy observer reports on every observed element almost
-            // immediately. Silence means it isn't running — show the content.
+            // immediately. Silence means it isn't running, so show the content.
             setTimeout(function () {
                 if (reported) return;
                 revealObserver.disconnect();

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineML | Keith Nicolosi</title>
+    <meta name="description" content="A self-directed machine learning curriculum built on one movie dataset, from data wrangling to neural networks, including the stage where the neural network lost.">
+    <meta name="theme-color" content="#08090C">
+
+    <link rel="canonical" href="https://keithnicolosi.com/projects/cineml.html">
+    <link rel="icon" href="../images/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="CineML | Keith Nicolosi">
+    <meta property="og:description" content="A self-directed ML curriculum on one dataset, including the stage where the neural network lost to logistic regression.">
+    <meta property="og:url" content="https://keithnicolosi.com/projects/cineml.html">
+    <meta property="og:image" content="https://keithnicolosi.com/images/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/project.css">
+</head>
+<body>
+
+    <a class="skip-link" href="#case">Skip to content</a>
+
+    <div class="aurora" aria-hidden="true">
+        <span class="blob b1"></span>
+        <span class="blob b2"></span>
+        <span class="blob b3"></span>
+        <span class="pointer-glow" id="pointer-glow"></span>
+    </div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="nav" id="nav">
+        <a class="brand" href="../index.html">
+            <span class="brand-mark">KN</span>
+            <span class="brand-name">Keith Nicolosi</span>
+        </a>
+        <div class="nav-right">
+            <a class="nav-cta" href="../index.html#work">All work</a>
+        </div>
+    </header>
+
+    <main class="case" id="case">
+
+        <a class="case-back" href="../index.html#work"><span>←</span> Back to work</a>
+
+        <p class="case-kicker">Self-Directed ML Curriculum · In progress</p>
+        <h1 class="case-title">CineML</h1>
+        <p class="case-standfirst">
+            A machine learning curriculum I set for myself, working from data cleaning up
+            through neural networks, deliberately using the same 5,000 movies at every
+            stage instead of a new toy dataset for each topic.
+        </p>
+
+        <dl class="case-facts">
+            <div>
+                <dt>Role</dt>
+                <dd>Solo project</dd>
+            </div>
+            <div>
+                <dt>Status</dt>
+                <dd>7 of 9 stages complete</dd>
+            </div>
+            <div>
+                <dt>Stack</dt>
+                <dd>Python · scikit-learn · PyTorch · pandas</dd>
+            </div>
+            <div>
+                <dt>Dataset</dt>
+                <dd>TMDB 5000 Movies</dd>
+            </div>
+        </dl>
+
+        <h2>One dataset, on purpose</h2>
+
+        <p>
+            Most ML learning material hands you a different dataset for every technique:
+            irises for classification, handwritten digits for neural networks, house
+            prices for regression. Each one is chosen to make its technique look good,
+            which is efficient for explaining the algorithm and useless for building
+            judgment. You never develop a feel for any of the data, so you can't tell
+            whether a result is impressive or whether the dataset was just easy.
+        </p>
+
+        <p>
+            CineML runs every stage on the same ~5,000 movies: budgets, revenue, genres,
+            cast, crew, ratings, and reviews. By the third stage I knew what the data
+            actually looked like: which fields were sparse, which correlations were real,
+            where the outliers hid. That meant when a model performed well I could usually
+            say <em>why</em>, and when it performed badly I could tell whether the problem
+            was the model or the data.
+        </p>
+
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-val">9</div>
+                <div class="metric-key">Stages</div>
+            </div>
+            <div class="metric">
+                <div class="metric-val">~5,000</div>
+                <div class="metric-key">Movies</div>
+            </div>
+            <div class="metric">
+                <div class="metric-val">1</div>
+                <div class="metric-key">Dataset throughout</div>
+            </div>
+            <div class="metric">
+                <div class="metric-val">Solo</div>
+                <div class="metric-key">Self-directed</div>
+            </div>
+        </div>
+
+        <h2>The stage where the neural network lost</h2>
+
+        <p>
+            Stage 5 built sentiment classification the classical way: TF-IDF to turn
+            review text into numbers, then logistic regression on top. It worked well.
+        </p>
+
+        <p>
+            Stage 6 was deep learning, so I rebuilt the same sentiment task as a neural
+            network in PyTorch, fully expecting it to win. It didn't. <strong>The neural
+            network was less accurate than the logistic regression it was supposed to
+            improve on.</strong>
+        </p>
+
+        <p>
+            The reason is the dataset size. Neural networks earn their advantage by
+            learning representations from large amounts of data; with only a few thousand
+            examples there isn't enough signal to justify the extra capacity, and a
+            well-chosen classical model with sensible features is simply the better tool.
+            TF-IDF plus logistic regression is a strong baseline precisely because it
+            doesn't need to learn what words mean from scratch.
+        </p>
+
+        <div class="callout">
+            <p class="callout-label">Why this is the most useful thing in the project</p>
+            <p>
+                It's easy to come out of an ML course believing newer means better. Having
+                actually built both and watched the sophisticated one lose is a much more
+                durable lesson than reading that it might. The real skill isn't knowing
+                how to build a neural network; it's knowing when not to.
+            </p>
+        </div>
+
+        <h2>Other things that surprised me</h2>
+
+        <ul class="case-list">
+            <li><strong>Class balance mattered more than model choice.</strong> In the NLP stage, how evenly the categories were split across training and test data had a severe effect on results, enough that correcting the imbalance was a bigger improvement than swapping models.</li>
+            <li><strong>Genre prediction is harder than it sounds.</strong> Films carry several genres at once, so it isn't one label per item; the model has to decide how many to assign, and it consistently over- or under-predicts.</li>
+            <li><strong>Tuning beat intuition.</strong> Random Forest was the best classifier, but running a systematic parameter search improved its accuracy, recall, and F1 together. Gradient Boosting won on the regression side; plain linear regression was mediocre.</li>
+            <li><strong>Clustering found things I didn't ask for.</strong> Left to group the films unsupervised, it separated out blockbusters (mostly Action and Adventure) and, separately, older classics that earned well and rated highly. Nobody labelled those groups; the structure was already in the data.</li>
+        </ul>
+
+        <h2>Engineering, not just notebooks</h2>
+
+        <p>
+            Stage 4 was the one with no new algorithms in it. It was about turning
+            experiments into something reusable: chaining the scaling, encoding, fitting,
+            and prediction steps into a single pipeline so the same transformations apply
+            identically to training and new data, then saving the trained models to disk.
+        </p>
+
+        <p>
+            That stage is why there's a <code>predict.py</code> in the repository rather
+            than only notebooks. You can hand it a movie's details and get a profitability
+            prediction back with a confidence score, loading the saved model instead of
+            retraining. It's a small thing, but it's the difference between an experiment
+            and something another person can run.
+        </p>
+
+        <h2>Where it's going</h2>
+
+        <p>
+            Stage 7 is recommendation systems (collaborative and content-based filtering),
+            which is the natural endpoint for a movie dataset. Stage 8 is a stretch list:
+            fine-tuning a transformer, computer vision, and deploying a model behind an
+            API rather than leaving it in a notebook.
+        </p>
+
+        <p>
+            The project is deliberately unfinished. It's a curriculum, and the point is
+            the progression rather than a finished product at the end.
+        </p>
+
+        <nav class="case-nav">
+            <a class="prev" href="finrobot.html">
+                <span class="nav-dir">← Previous</span>
+                <span class="nav-name">FinRobot</span>
+            </a>
+            <a class="next" href="portfolio.html">
+                <span class="nav-dir">Next →</span>
+                <span class="nav-name">Personal Portfolio</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <script src="../javascript/script.js"></script>
+</body>
+</html>

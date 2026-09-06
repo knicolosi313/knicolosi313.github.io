@@ -1,10 +1,10 @@
-# Keith Nicolosi — Portfolio
+# Keith Nicolosi | Portfolio
 
-My personal portfolio site. Hand-built with vanilla HTML, CSS, and JavaScript — no frameworks, no build step, no dependencies.
+My personal portfolio site. Hand-built with vanilla HTML, CSS, and JavaScript. No frameworks, no build step, no dependencies.
 
 **Live:** [keithnicolosi.com](https://keithnicolosi.com)
 
-![Keith Nicolosi — Software Engineer](images/og-image.png)
+![Keith Nicolosi, Software Engineer](images/og-image.png)
 
 ---
 
@@ -12,14 +12,14 @@ My personal portfolio site. Hand-built with vanilla HTML, CSS, and JavaScript �
 
 A single-page portfolio covering my background, selected projects, technical stack, and experience. The design is built around a dark "research lab" aesthetic: a deep void background with a slow-drifting aurora field, frosted glass panels, and film grain to keep the gradients from banding.
 
-Everything is written by hand. There is no framework, no bundler, and no `node_modules` — the site is three files plus images, served exactly as they are written.
+Everything is written by hand. There is no framework, no bundler, and no `node_modules`. The site is three files plus images, served exactly as they are written.
 
 ## Design
 
-- **Aurora field** — three large blurred radial gradients drifting on 26s / 32s / 38s cycles at different rates, so the background never visibly loops. Transform-only animation, so it stays on the compositor.
-- **Glass panels** — `backdrop-filter` with a top-edge highlight gradient, so panels catch light rather than looking like flat translucent boxes.
-- **Pointer-tracked glow** — a soft light follows the cursor across the aurora. Disabled on touch devices and under reduced-motion.
-- **Film grain** — an inline SVG `feTurbulence` layer at 3.2% opacity, deliberately placed *below* the content layer so it smooths gradient banding without softening text.
+- **Aurora field**: three large blurred radial gradients drifting on 26s / 32s / 38s cycles at different rates, so the background never visibly loops. Transform-only animation, so it stays on the compositor.
+- **Glass panels**: `backdrop-filter` with a top-edge highlight gradient, so panels catch light rather than looking like flat translucent boxes.
+- **Pointer-tracked glow**: a soft light follows the cursor across the aurora. Disabled on touch devices and under reduced-motion.
+- **Film grain**: an inline SVG `feTurbulence` layer at 3.2% opacity, deliberately placed *below* the content layer so it smooths gradient banding without softening text.
 
 ## Performance
 
@@ -38,12 +38,12 @@ The portrait is served as WebP with a JPEG fallback through `<picture>`, sized a
 ## Accessibility
 
 - Skip-to-content link
-- Full `prefers-reduced-motion` support — animations, the aurora, and the pointer glow all disable
+- Full `prefers-reduced-motion` support: animations, the aurora, and the pointer glow all disable
 - Semantic landmarks, `aria-expanded` on the mobile nav toggle, labelled sections
 - Visible focus rings on all interactive elements
 - Keyboard-dismissable mobile navigation
 
-The scroll-reveal animation degrades safely: above-the-fold content is revealed on load without relying on `IntersectionObserver`, and a failsafe reveals everything below the fold if the observer never reports — so the page can never be left blank if the API is suspended or unsupported.
+The scroll-reveal animation degrades safely: above-the-fold content is revealed on load without relying on `IntersectionObserver`, and a failsafe reveals everything below the fold if the observer never reports, so the page can never be left blank if the API is suspended or unsupported.
 
 ## Structure
 
@@ -68,7 +68,7 @@ npx serve .
 
 ## Deployment
 
-Deployed via GitHub Pages from the `main` branch. No build step or CI configuration is required — GitHub serves the files as-is.
+Deployed via GitHub Pages from the `main` branch. No build step or CI configuration is required; GitHub serves the files as-is.
 
 ## Development
 

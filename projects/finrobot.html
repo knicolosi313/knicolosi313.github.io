@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinRobot | Keith Nicolosi</title>
+    <meta name="description" content="A multi-agent equity research pipeline: three MCP servers, three model providers, one PDF report. Built with the RIT AI Club.">
+    <meta name="theme-color" content="#08090C">
+
+    <link rel="canonical" href="https://keithnicolosi.com/projects/finrobot.html">
+    <link rel="icon" href="../images/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="FinRobot | Keith Nicolosi">
+    <meta property="og:description" content="A multi-agent equity research pipeline: three MCP servers, three model providers, one PDF report.">
+    <meta property="og:url" content="https://keithnicolosi.com/projects/finrobot.html">
+    <meta property="og:image" content="https://keithnicolosi.com/images/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/project.css">
+</head>
+<body>
+
+    <a class="skip-link" href="#case">Skip to content</a>
+
+    <div class="aurora" aria-hidden="true">
+        <span class="blob b1"></span>
+        <span class="blob b2"></span>
+        <span class="blob b3"></span>
+        <span class="pointer-glow" id="pointer-glow"></span>
+    </div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="nav" id="nav">
+        <a class="brand" href="../index.html">
+            <span class="brand-mark">KN</span>
+            <span class="brand-name">Keith Nicolosi</span>
+        </a>
+        <div class="nav-right">
+            <a class="nav-cta" href="../index.html#work">All work</a>
+        </div>
+    </header>
+
+    <main class="case" id="case">
+
+        <a class="case-back" href="../index.html#work"><span>←</span> Back to work</a>
+
+        <p class="case-kicker">Multi-Agent Research Pipeline · Jan 2026 to present</p>
+        <h1 class="case-title">FinRobot</h1>
+        <p class="case-standfirst">
+            Type a stock ticker, get a formatted equity research report. Behind it are
+            three MCP servers running three different model providers, each picked for
+            the one thing it's genuinely best at.
+        </p>
+
+        <dl class="case-facts">
+            <div>
+                <dt>Role</dt>
+                <dd>Lead contributor, MCP tooling &amp; services</dd>
+            </div>
+            <div>
+                <dt>Team</dt>
+                <dd>6 contributors, RIT AI Club</dd>
+            </div>
+            <div>
+                <dt>Stack</dt>
+                <dd>Python · MCP · FastAPI · React</dd>
+            </div>
+            <div>
+                <dt>Code</dt>
+                <dd><a href="https://github.com/RIT-AI-Club/FinRLExtention" target="_blank" rel="noopener">GitHub ↗</a></dd>
+            </div>
+        </dl>
+
+        <h2>What it does</h2>
+
+        <p>
+            This is the explanation I use when demoing it, because it's the one that
+            actually lands with people who don't write software:
+        </p>
+
+        <p>
+            <strong>You type in a stock ticker.</strong> One bot goes out and gathers
+            the research. It hands that to the main bot, which decides what's needed and
+            passes the work along: to a graph maker that draws the charts, and to a
+            final bot that formats everything into a clean document. What comes back is a
+            PDF you could actually hand to someone.
+        </p>
+
+        <p>
+            Three phases, each handled by something specialised. That framing survives
+            contact with a non-technical audience, and it also happens to be an accurate
+            description of the architecture rather than a simplification of it.
+        </p>
+
+        <h2>Why MCP, and not just API calls</h2>
+
+        <p>
+            The honest answer to "why not call the APIs directly in Python" is that we
+            could have; for a single-model pipeline it would have been less code. The
+            reason MCP earns its place here is that
+            <strong>this isn't a single-model pipeline.</strong>
+        </p>
+
+        <p>
+            Research, charting, and formatting are genuinely different problems, and the
+            best tool for each is different. The Model Context Protocol lets each one run
+            as its own server, exposing its capabilities through a consistent interface,
+            so the orchestrator can call them without knowing or caring what's behind
+            them. Swapping the model inside one server doesn't touch the other two.
+        </p>
+
+        <pre><code>mcp_servers:
+  - name: "research"           # Perplexity: search-native retrieval
+  - name: "chart_generation"   # Matplotlib: deterministic, no model
+  - name: "formatting"         # Claude: document layout &amp; styling
+
+orchestrator: Gemini           # tool calling and coordination</code></pre>
+
+        <h3>Model routing by task</h3>
+
+        <ul class="case-list">
+            <li><strong>Perplexity for research.</strong> It's search-native, built to retrieve and cite current information. Asking a general-purpose model to recall market data from training weights is the wrong shape of question entirely.</li>
+            <li><strong>Gemini as orchestrator.</strong> It holds the conversation, decides which tools to invoke, and sequences the phases.</li>
+            <li><strong>Claude for formatting.</strong> Turning a pile of research and charts into well-structured HTML that survives conversion to PDF is a writing-and-layout problem, and that's where it's strongest. This server originally ran on Gemini (the old implementation is still in the tree as <code>gemini_old/</code>), and moving it was a straight quality decision.</li>
+            <li><strong>Matplotlib for charts, deliberately not a model.</strong> Charts have exactly one correct answer given the data. A deterministic library gets it right every time for free; an LLM would be slower, cost money, and occasionally invent a data point. The interesting judgment in an AI project is often knowing which parts shouldn't be AI.</li>
+        </ul>
+
+        <div class="callout">
+            <p class="callout-label">The trade-off</p>
+            <p>
+                Three servers and three providers means three sets of credentials, three
+                failure modes, and a process-management story that a single script
+                wouldn't have. In exchange each phase is independently swappable and
+                testable, and we could replace the formatting model without regression
+                risk to research. For a project whose stated purpose is learning how
+                agent architectures fit together, that's the right side of the trade.
+            </p>
+        </div>
+
+        <h2>Things that only show up when you run it</h2>
+
+        <h3>Rate limits are an architecture problem</h3>
+
+        <p>
+            The orchestrator sits in the middle of every request, which makes it the
+            first thing to hit a rate limit. Gemini returning HTTP 429 mid-pipeline
+            doesn't just fail one call; it strands a report halfway through, after the
+            research phase has already been paid for.
+        </p>
+
+        <p>
+            Sends now retry with exponential backoff: five attempts, starting at two
+            seconds and doubling. It's a small piece of code that turns a class of hard
+            failure into a slow success, and it only became obviously necessary once
+            several people were demoing simultaneously.
+        </p>
+
+        <h3>PDF conversion is its own problem</h3>
+
+        <p>
+            Getting a report to look right in a browser is not the same as getting it to
+            look right on a page. Export runs through Playwright, driving a real browser
+            engine to render the HTML and print it, because that's the only reliable way
+            to get output that matches what you saw on screen.
+        </p>
+
+        <h2>Presenting it</h2>
+
+        <p>
+            FinRobot was presented at ImagineRIT 2026 to roughly 200–300 attendees across
+            the day, alongside demos at club meetings and tabling events.
+        </p>
+
+        <p>
+            The audience at ImagineRIT is deliberately general: students, faculty,
+            industry visitors, and members of the public with no technical background.
+            Explaining a multi-agent MCP pipeline to someone who has never heard of any of
+            those words is a genuinely useful constraint, and it's where the
+            "one bot gathers, one draws, one writes" framing came from. Being forced to
+            describe a system without jargon is a fast way to find out which parts of your
+            own design you don't actually understand.
+        </p>
+
+        <h2>Where it's going</h2>
+
+        <p>
+            FinRobot started as an exploration project, a way for the AI Club to learn
+            how agent architectures, MCP, and multi-model pipelines actually behave when
+            you build something real with them. That's still its primary purpose.
+        </p>
+
+        <p>
+            The current direction is evolving it toward a practical use case for
+            investors: output someone would genuinely use for research rather than a
+            demonstration that it can be produced. <strong>It won't be
+            commercialised.</strong> It's a club project, built by club members for
+            learning, and it stays that way.
+        </p>
+
+        <p>
+            Six people have contributed to it so far. My work has centred on the MCP
+            tooling and the server-side logic behind it, the layer that has to turn
+            inconsistent, rate-limited, occasionally-disagreeing external sources into
+            something predictable enough for a model to reason over.
+        </p>
+
+        <nav class="case-nav">
+            <a class="prev" href="cramai.html">
+                <span class="nav-dir">← Previous</span>
+                <span class="nav-name">CramAI</span>
+            </a>
+            <a class="next" href="cineml.html">
+                <span class="nav-dir">Next →</span>
+                <span class="nav-name">CineML</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <script src="../javascript/script.js"></script>
+</body>
+</html>

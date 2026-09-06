@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CramAI | Keith Nicolosi</title>
+    <meta name="description" content="An adaptive study app built on FSRS-4.5 and the OpenAI Responses API, and the prompt-cache bug that was silently costing 10× on input.">
+    <meta name="theme-color" content="#08090C">
+
+    <link rel="canonical" href="https://keithnicolosi.com/projects/cramai.html">
+    <link rel="icon" href="../images/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="CramAI | Keith Nicolosi">
+    <meta property="og:description" content="An adaptive study app built on FSRS-4.5, and the prompt-cache bug that was silently costing 10× on input.">
+    <meta property="og:url" content="https://keithnicolosi.com/projects/cramai.html">
+    <meta property="og:image" content="https://keithnicolosi.com/images/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/project.css">
+</head>
+<body>
+
+    <a class="skip-link" href="#case">Skip to content</a>
+
+    <div class="aurora" aria-hidden="true">
+        <span class="blob b1"></span>
+        <span class="blob b2"></span>
+        <span class="blob b3"></span>
+        <span class="pointer-glow" id="pointer-glow"></span>
+    </div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="nav" id="nav">
+        <a class="brand" href="../index.html">
+            <span class="brand-mark">KN</span>
+            <span class="brand-name">Keith Nicolosi</span>
+        </a>
+        <div class="nav-right">
+            <a class="nav-cta" href="../index.html#work">All work</a>
+        </div>
+    </header>
+
+    <main class="case" id="case">
+
+        <a class="case-back" href="../index.html#work"><span>←</span> Back to work</a>
+
+        <p class="case-kicker">Adaptive Learning · In active development</p>
+        <h1 class="case-title">CramAI</h1>
+        <p class="case-standfirst">
+            A study app that generates its own material and schedules it with FSRS-4.5.
+            I built it for my Discrete Mathematics for Computing class and I'm still
+            using it for coursework, which is how most of the interesting problems
+            found me.
+        </p>
+
+        <dl class="case-facts">
+            <div>
+                <dt>Role</dt>
+                <dd>Full-stack design &amp; build</dd>
+            </div>
+            <div>
+                <dt>Status</dt>
+                <dd>In active development</dd>
+            </div>
+            <div>
+                <dt>Stack</dt>
+                <dd>Python · FastAPI · OpenAI · React · Supabase</dd>
+            </div>
+            <div>
+                <dt>Scheduler</dt>
+                <dd>FSRS-4.5 (SM-2 fallback)</dd>
+            </div>
+        </dl>
+
+        <h2>Why I built it</h2>
+
+        <p>
+            I was using NotebookLM to study, and it was good at the thing it does:
+            answer questions about documents you give it. But it was
+            <strong>a tool, not a tutor</strong>. It didn't know me. It couldn't tell
+            you whether I was getting better at anything, because it wasn't tracking
+            anything. Every session started from zero.
+        </p>
+
+        <p>
+            Studying isn't a series of independent lookups; it's a process with state.
+            What I needed to know was which concepts I kept failing, when I was about to
+            forget something, and whether three weeks of work had actually moved
+            anything. None of that exists if the tool has no memory of you.
+        </p>
+
+        <p>
+            So CramAI is built around the state rather than the generation. Generation is
+            the part everyone can do now; the interesting question is what you do with
+            the results over eight weeks of a semester.
+        </p>
+
+        <h2>Scheduling: FSRS-4.5, not a correctness ratio</h2>
+
+        <p>
+            The naive version of "adaptive" is a running percentage: get it right, see
+            it less. I didn't write that, because the problem is well-studied and the
+            good answers are public.
+        </p>
+
+        <p>
+            Reviews run on <strong>FSRS-4.5</strong>, which models every card as a pair
+            of values: <code>stability</code> (roughly, how many days until recall
+            decays to target) and <code>difficulty</code> (1–10, how hard this specific
+            card is <em>for this specific user</em>), and schedules each review to land
+            at the moment recall probability drops to 90%. Compared to SM-2 it reaches
+            the same retention with markedly fewer reviews, which for a student the week
+            before an exam is the entire value proposition.
+        </p>
+
+        <p>
+            SM-2 is still in the codebase, deliberately. It backs the legacy ease-factor
+            bookkeeping shown in the card-history chart, and it bootstraps decks created
+            before FSRS existed. Ratings are the familiar four-point scale: Again, Hard,
+            Good, Easy, and both schedulers are pure functions with no I/O, which is why
+            they're straightforward to test.
+        </p>
+
+        <p>
+            Topic mastery is then the share of a topic's cards that have reached maturity,
+            which is what drives the progression dashboard and the learning path: the
+            "am I actually improving" signal that NotebookLM couldn't give me.
+        </p>
+
+        <h2>The real problem was cost</h2>
+
+        <p>
+            Not accuracy, not latency: <strong>cost</strong>. A study app's whole premise
+            is that generating material is cheap enough to do casually. If a single
+            textbook chapter costs real money to turn into a deck, the product doesn't
+            work, because the behaviour it depends on is students generating decks
+            without thinking about it.
+        </p>
+
+        <p>
+            I originally built on the Claude API. Moving generation to OpenAI's
+            <code>gpt-5.6-luna</code> cut cost by roughly <strong>5–9×</strong> at
+            comparable reasoning quality for this workload. That migration then opened up
+            three further optimisations that mattered more than the swap itself.
+        </p>
+
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-val">5–9×</div>
+                <div class="metric-key">Cost reduction</div>
+            </div>
+            <div class="metric">
+                <div class="metric-val">70%</div>
+                <div class="metric-key">Saved per cached round</div>
+            </div>
+            <div class="metric">
+                <div class="metric-val">~200pp</div>
+                <div class="metric-key">Max document</div>
+            </div>
+            <div class="metric">
+                <div class="metric-val">10–120</div>
+                <div class="metric-key">Cards, scaled to length</div>
+            </div>
+        </div>
+
+        <h3>Reasoning effort is a per-call-site decision</h3>
+
+        <p>
+            Reasoning tokens bill as output tokens <em>and</em> count against
+            <code>max_output_tokens</code>, so leaving effort at the family default of
+            <code>medium</code> everywhere means paying for deliberation on calls that
+            don't need it, and worse, letting reasoning eat the budget the model needs
+            to emit its actual JSON.
+        </p>
+
+        <p>
+            Effort is now pinned per call site. Straight extraction and latency-sensitive
+            paths run at <code>none</code>. Document generation runs at <code>low</code>,
+            because spreading N cards evenly across a whole document while holding a
+            basic/cloze mix is planning work, not extraction. When the learning-path call
+            started truncating, the fix was recognising that its reasoning was starving
+            its own output; the cap moved from 1,024 to 4,096 tokens.
+        </p>
+
+        <h2>The bug that cost 10× and looked like nothing</h2>
+
+        <p>
+            This is my favourite bug in the project, because the application behaved
+            perfectly correctly the entire time it was happening.
+        </p>
+
+        <p>
+            Quiz generation runs in rounds, and rounds 2 and 3 resend the same source
+            document along with an "avoid" list of questions already asked. The document
+            is the expensive part of that request, and prompt caching exists precisely to
+            stop you paying full price for it twice.
+        </p>
+
+        <p>
+            But <strong>the cache matches on a byte-identical prefix.</strong> I had put
+            the avoid-list in <code>instructions</code>, ahead of the source text. That
+            list changes every round by definition. So every round presented a different
+            prefix, every round missed the cache, and every round re-paid full input price
+            on a document the cache was already holding.
+        </p>
+
+        <div class="callout">
+            <p class="callout-label">The fix</p>
+            <p>
+                Move the avoid-list so it trails the document. Anything that varies
+                between two requests has to sit <em>after</em> everything they share.
+                That one reordering took roughly <strong>47% off an additional round on a
+                30-page deck, and 70% on an 86-page one.</strong>
+            </p>
+        </div>
+
+        <p>
+            The part I actually learned wasn't about caching. It was about
+            <strong>failure modes that don't announce themselves.</strong> Nothing threw.
+            No output changed. No test failed. The app worked exactly as designed and
+            quietly cost ten times more on input than it should have. A comment saying
+            "keep this last" would have been deleted by the next person to touch the file,
+            including me.
+        </p>
+
+        <p>
+            So it's pinned by <code>test_prompt_cache.py</code>, which asserts the
+            ordering contract directly. If someone moves the avoid-list back into
+            <code>instructions</code>, the suite fails loudly instead of the bill rising
+            silently. <strong>Bugs that are invisible in behaviour need tests, not
+            comments</strong>. Comments document intent, tests enforce it.
+        </p>
+
+        <p>
+            The cache key itself is a SHA-256 hash of the stable prefix rather than the
+            raw text, so no document content travels in a request metadata field. It's
+            also deliberately <em>not</em> set on the explain and learning-path calls:
+            their entire prefix sits under the 1,024-token cache minimum and can never
+            produce a hit, so adding it would be theatre.
+        </p>
+
+        <h2>What an 86-page PDF broke</h2>
+
+        <p>
+            A real document from my own coursework got rejected outright: the generate
+            route capped source text at 50,000 characters. Raising it to 500,000
+            (~125k tokens, roughly 200 pages) was the obvious fix, and on its own it would
+            have accomplished nothing.
+        </p>
+
+        <p>
+            The prompt hardcoded "~10 flashcards." A textbook chapter produced exactly the
+            same tiny deck as a two-page handout: technically successful, completely
+            useless. Card targets now scale with document length at roughly one card per
+            2,000 characters, clamped to 10–120, with quizzes at a third of that. The
+            prompt also asks for coverage spread across the whole document, because
+            without that instruction generation front-loads on the opening pages and
+            silently ignores the back half.
+        </p>
+
+        <p>
+            Generating that much output needs room: the combined call's budget went from
+            16,384 to 64,000 tokens, which in turn forced a move to streaming. And the
+            global two-minute client timeout would abort a large generation mid-flight, so
+            <code>/generate/all</code> got its own ten-minute timeout.
+        </p>
+
+        <div class="callout">
+            <p class="callout-label">The pattern</p>
+            <p>
+                One cap was the visible failure. Fixing it exposed three more limits
+                sitting behind it (prompt, output budget, and timeout), none of which
+                announced themselves until the one in front had moved. Raising a limit
+                usually means finding the next one.
+            </p>
+        </div>
+
+        <h2>Sharing it</h2>
+
+        <p>
+            I've demoed CramAI to other students at RIT AI Club meetings and tabling
+            events. Watching someone use it for thirty seconds surfaces things that months
+            of using it yourself will not; you stop seeing your own interface after a
+            while, and the questions people ask are a much better bug report than anything
+            I'd have written down alone.
+        </p>
+
+        <h2>The thing standing between this and launch</h2>
+
+        <p>
+            I want to open CramAI up to other students. The obstacle isn't technical:
+            it's that <strong>every generation is billed to my personal card.</strong>
+        </p>
+
+        <p>
+            A study app has an awkward cost profile. Usage isn't spread evenly; it spikes
+            hard in the two weeks around midterms and finals, which is exactly when the
+            app is most useful and exactly when a free tier is most expensive. Success and
+            cost are the same curve. "It got popular" and "I can't afford it" would arrive
+            in the same week.
+        </p>
+
+        <p>
+            So a paid tier is likely a requirement rather than an ambition, not to build
+            a business, but because unbounded free generation on a student budget isn't a
+            thing that can exist. That reframes the cost work on this page: the 5–9×
+            provider saving and the caching fix aren't optimisation for its own sake, they
+            directly set how much free usage is survivable and how low a paid tier could
+            reasonably start.
+        </p>
+
+        <p>
+            It's the clearest lesson the project has taught me. Beyond a certain point,
+            architecture decisions and business-model decisions stop being separate
+            conversations: the unit economics <em>are</em> a design constraint, and one
+            that shows up in the code long before it shows up on a balance sheet.
+        </p>
+
+        <nav class="case-nav">
+            <a class="prev" href="portfolio.html">
+                <span class="nav-dir">← Previous</span>
+                <span class="nav-name">Personal Portfolio</span>
+            </a>
+            <a class="next" href="finrobot.html">
+                <span class="nav-dir">Next →</span>
+                <span class="nav-name">FinRobot</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <script src="../javascript/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Portfolio | Keith Nicolosi</title>
+    <meta name="description" content="Building a portfolio site from scratch: three rebuilds, one very large photo, and a bug that made the whole page disappear.">
+    <meta name="theme-color" content="#08090C">
+
+    <link rel="canonical" href="https://keithnicolosi.com/projects/portfolio.html">
+    <link rel="icon" href="../images/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Personal Portfolio | Keith Nicolosi">
+    <meta property="og:description" content="Three rebuilds, one very large photo, and a bug that made the whole page disappear.">
+    <meta property="og:url" content="https://keithnicolosi.com/projects/portfolio.html">
+    <meta property="og:image" content="https://keithnicolosi.com/images/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/project.css">
+</head>
+<body>
+
+    <a class="skip-link" href="#case">Skip to content</a>
+
+    <div class="aurora" aria-hidden="true">
+        <span class="blob b1"></span>
+        <span class="blob b2"></span>
+        <span class="blob b3"></span>
+        <span class="pointer-glow" id="pointer-glow"></span>
+    </div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="nav" id="nav">
+        <a class="brand" href="../index.html">
+            <span class="brand-mark">KN</span>
+            <span class="brand-name">Keith Nicolosi</span>
+        </a>
+        <div class="nav-right">
+            <a class="nav-cta" href="../index.html#work">All work</a>
+        </div>
+    </header>
+
+    <main class="case" id="case">
+
+        <a class="case-back" href="../index.html#work"><span>←</span> Back to work</a>
+
+        <p class="case-kicker">Design &amp; Build · 2026</p>
+        <h1 class="case-title">Personal Portfolio</h1>
+        <p class="case-standfirst">
+            I rebuilt this site three times before it felt right. Along the way I made it
+            twenty times smaller and found a bug that made the entire page vanish.
+        </p>
+
+        <dl class="case-facts">
+            <div>
+                <dt>Role</dt>
+                <dd>Design &amp; build</dd>
+            </div>
+            <div>
+                <dt>Timeline</dt>
+                <dd>2026</dd>
+            </div>
+            <div>
+                <dt>Built with</dt>
+                <dd>HTML · CSS · JavaScript</dd>
+            </div>
+            <div>
+                <dt>Live</dt>
+                <dd><a href="https://keithnicolosi.com">keithnicolosi.com</a></dd>
+            </div>
+        </dl>
+
+        <h2>Three tries to get it right</h2>
+
+        <p>
+            My first portfolio looked like a hacker movie. Neon green text on black, fake
+            scanlines like an old monitor, a blinking cursor, and a pretend terminal that
+            typed out my name when the page loaded. I was pretty happy with it.
+        </p>
+
+        <p>
+            The problem was what it said about me before anyone read a word. It looked
+            like someone who thinks coding is cool, which is true, but it isn't the point.
+            I wanted it to look like someone who makes deliberate choices and can explain
+            why. Those are different impressions, and the second one is much harder to
+            fake.
+        </p>
+
+        <p>
+            The second attempt went the other way entirely: cream background, elegant
+            serif headlines, lots of white space. It was probably the best-looking of the
+            three and I scrapped it too. It read like a magazine article
+            <em>about</em> me rather than something built <em>by</em> me: polished, but it
+            could have belonged to anyone.
+        </p>
+
+        <p>
+            The third one is this. Knowing what to throw away turned out to be most of
+            the work.
+        </p>
+
+        <h2>Building it by hand</h2>
+
+        <p>
+            Most sites today are built on top of large toolkits that handle the heavy
+            lifting for you. I didn't use any. This site is three files (one for
+            structure, one for styling, one for behaviour) and a folder of images.
+            Nothing gets compiled or processed. What I wrote is exactly what your browser
+            receives.
+        </p>
+
+        <p>
+            That wasn't stubbornness. A portfolio is something you edit maybe twice a
+            year, usually in a hurry, right before you need it. Every tool you build on
+            top of is one more thing that can stop working while you weren't looking:
+            versions change, things get deprecated, and suddenly you're spending an
+            evening fixing your build instead of updating your site. I wanted something I
+            could open in five years, change one line, and publish.
+        </p>
+
+        <div class="callout">
+            <p class="callout-label">The trade-off</p>
+            <p>
+                Doing it by hand takes longer up front and means repeating myself more
+                than I'd like. In return there's nothing between me and the page, and
+                publishing is a single command. For a site this size that's clearly worth
+                it. For something much bigger it wouldn't be, and knowing where that line
+                sits is the actually useful part.
+            </p>
+        </div>
+
+        <h2>Making it fast</h2>
+
+        <p>
+            The finished page is about <strong>71 KB</strong>, small enough to appear
+            almost instantly, even on a bad connection. It started out roughly twenty
+            times larger, and nearly all of that was one file: my photo.
+        </p>
+
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-val">71 KB</div>
+                <div class="metric-key">Whole page</div>
+            </div>
+            <div class="metric">
+                <div class="metric-val">~87×</div>
+                <div class="metric-key">Smaller photo</div>
+            </div>
+            <div class="metric">
+                <div class="metric-val">0</div>
+                <div class="metric-key">Outside tools</div>
+            </div>
+            <div class="metric">
+                <div class="metric-val">3</div>
+                <div class="metric-key">Files</div>
+            </div>
+        </div>
+
+        <p>
+            The original portrait was 1.34 MB. It was also far larger than it needed to
+            be (roughly five times wider than the space it actually appears in) and
+            saved in a format that reserves room for transparent areas, despite the photo
+            having none. It was carrying instructions for transparency that didn't exist.
+        </p>
+
+        <p>
+            Resized to fit its actual slot (with enough extra to stay sharp on high-detail
+            screens) and saved in a more efficient modern format, it came out at
+            <strong>15.5 KB</strong>, about 87 times smaller, with no visible difference.
+            An older-format copy sits alongside it for browsers that need one.
+        </p>
+
+        <h2>The bug that made everything disappear</h2>
+
+        <p>
+            Sections on this site fade in as you scroll to them. The standard way to build
+            that is to start each section invisible, then have the browser tell you when
+            it scrolls into view so you can fade it in.
+        </p>
+
+        <p>
+            There's a trap in that, and it's a bad one: <strong>if the "it's now visible"
+            message never arrives, the content never comes back.</strong> The page doesn't
+            partially break or look wrong; it renders completely blank. All the text is
+            sitting right there, just permanently invisible.
+        </p>
+
+        <p>
+            I hit this for real while testing. In one situation the browser simply never
+            sent those notifications, and the entire site was an empty screen. Everything
+            was technically working; you just couldn't see any of it.
+        </p>
+
+        <div class="callout">
+            <p class="callout-label">The fix</p>
+            <p>
+                The first screen no longer waits to be told anything; it checks its own
+                position directly and shows itself. Everything further down still uses the
+                normal approach, but with a timer watching in the background: if no
+                notifications have arrived within a second and a half, it assumes the
+                system isn't working and reveals everything immediately.
+            </p>
+        </div>
+
+        <p>
+            The lesson stuck with me more than the fix did. <strong>If you hide something
+            on purpose, you need a guaranteed way to bring it back.</strong> Otherwise
+            you haven't added a nice effect; you've put a single point of failure in
+            front of your entire page.
+        </p>
+
+        <h2>A few design details</h2>
+
+        <h3>The background never repeats</h3>
+
+        <p>
+            Those slow-moving coloured lights behind the page drift on three different
+            timings that don't line up with each other. If they shared a rhythm you'd
+            eventually notice the pattern restarting, and it would start to feel cheap.
+            Mismatched timings mean it effectively never repeats.
+        </p>
+
+        <h3>The texture is deliberate</h3>
+
+        <p>
+            Large, soft colour gradients on a dark background tend to show visible
+            stripes rather than blending smoothly, and you've probably noticed it in photos
+            of a sunset sky. Adding a very faint layer of grain breaks those stripes up,
+            and your eye reads it as texture instead.
+        </p>
+
+        <p>
+            The trick is that the grain sits <em>underneath</em> the text rather than over
+            the top of it. Over the top, it makes everything slightly fuzzy. Underneath,
+            the background smooths out and the text stays perfectly sharp.
+        </p>
+
+        <h3>The panels behave like glass</h3>
+
+        <p>
+            The cards blur whatever is behind them and catch a bit of light along their
+            top edge. That highlight is doing most of the work; real glass catches light
+            that way, and without it the panels just look like flat grey boxes.
+        </p>
+
+        <h2>Making it work for everyone</h2>
+
+        <p>
+            Some people get motion sickness from animation, so if you've told your device
+            you prefer reduced motion, this site turns all of it off: the drifting
+            background, the fade-ins, the glow that follows your cursor. Not some of it,
+            all of it.
+        </p>
+
+        <p>
+            There's also a skip link for people navigating by keyboard so they don't have
+            to tab through the menu on every page, clear outlines showing where the
+            keyboard focus currently is, and the cursor glow switches off entirely on
+            phones and tablets, where it means nothing and only costs battery.
+        </p>
+
+        <h2>What I'd do differently</h2>
+
+        <p>
+            The styling file is getting long, close to a thousand lines. It's still
+            manageable because it's organised in the same order as the page itself, but
+            it's near the limit of what one file should reasonably hold. I've already
+            split these project pages into their own file, and that's the direction I'd
+            keep going.
+        </p>
+
+        <p>
+            The bigger one: I'm writing each of these case study pages by hand, and
+            they're largely the same shape. That's exactly the point where building
+            everything from scratch stops paying off, and the honest answer is that a tool
+            to generate them would now be the right call. Which is the whole reason the
+            no-tools rule was worth trying in the first place: you learn where the limits
+            actually are by walking into them.
+        </p>
+
+        <nav class="case-nav">
+            <a class="prev" href="cineml.html">
+                <span class="nav-dir">← Previous</span>
+                <span class="nav-name">CineML</span>
+            </a>
+            <a class="next" href="cramai.html">
+                <span class="nav-dir">Next →</span>
+                <span class="nav-name">CramAI</span>
+            </a>
+        </nav>
+
+    </main>
+
+    <script src="../javascript/script.js"></script>
+</body>
+</html>
