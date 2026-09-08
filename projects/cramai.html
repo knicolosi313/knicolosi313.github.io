@@ -281,6 +281,39 @@
             </p>
         </div>
 
+        <h2>The cheapest call is the one you don't make</h2>
+
+        <p>
+            Cutting the price of a generation is only half the problem. The other half is
+            noticing how many features people <em>assume</em> need a model and then
+            checking whether they actually do.
+        </p>
+
+        <p>
+            Practice quizzes were the clearest case. Asking the API for another round of
+            multiple-choice questions is the obvious implementation, and it's wrong: the
+            deck already contains everything a question needs. A card's question becomes
+            the prompt, its answer becomes the correct option, and the distractors are
+            borrowed from other cards in the deck, preferring the same topic so the wrong
+            answers are plausible rather than absurd. Unlimited rounds, zero tokens, and
+            it works on decks imported from Anki that never had an AI-generated quiz at
+            all.
+        </p>
+
+        <p>
+            It refuses rather than fakes. If a deck has fewer than two distinct answers
+            there's no honest distractor to offer, so the builder returns nothing and the
+            UI says so, instead of producing a question with one real option.
+        </p>
+
+        <p>
+            The same principle covers CSV import and export, deck shuffling and topic
+            filtering, and every review and scheduling flow: none of them touch the API.
+            <strong>The model is metered to the parts that genuinely require one</strong>,
+            which is what keeps the app usable during the exam week when usage, and the
+            bill, spike together.
+        </p>
+
         <h2>Sharing it</h2>
 
         <p>

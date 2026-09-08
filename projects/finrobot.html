@@ -127,7 +127,7 @@ orchestrator: Gemini           # tool calling and coordination</code></pre>
         <ul class="case-list">
             <li><strong>Perplexity for research.</strong> It's search-native, built to retrieve and cite current information. Asking a general-purpose model to recall market data from training weights is the wrong shape of question entirely.</li>
             <li><strong>Gemini as orchestrator.</strong> It holds the conversation, decides which tools to invoke, and sequences the phases.</li>
-            <li><strong>Claude for formatting.</strong> Turning a pile of research and charts into well-structured HTML that survives conversion to PDF is a writing-and-layout problem, and that's where it's strongest. This server originally ran on Gemini (the old implementation is still in the tree as <code>gemini_old/</code>), and moving it was a straight quality decision.</li>
+            <li><strong>Claude for formatting.</strong> Turning a pile of research and charts into well-structured HTML that survives conversion to PDF is a writing-and-layout problem, and that's where it's strongest. This server originally ran on Gemini; moving it was a straight quality decision, and the superseded implementation has since been deleted rather than left in the tree to rot.</li>
             <li><strong>Matplotlib for charts, deliberately not a model.</strong> Charts have exactly one correct answer given the data. A deterministic library gets it right every time for free; an LLM would be slower, cost money, and occasionally invent a data point. The interesting judgment in an AI project is often knowing which parts shouldn't be AI.</li>
         </ul>
 
@@ -168,6 +168,70 @@ orchestrator: Gemini           # tool calling and coordination</code></pre>
             look right on a page. Export runs through Playwright, driving a real browser
             engine to render the HTML and print it, because that's the only reliable way
             to get output that matches what you saw on screen.
+        </p>
+
+        <h3>The charts can't go to the model</h3>
+
+        <p>
+            The formatting server has to place charts inside a document written by
+            Claude, and the obvious way to do that is to show Claude the charts. That
+            doesn't survive contact with the numbers: a single chart PNG is roughly
+            <strong>67,000 input tokens</strong>. Two of them and the request budget is
+            gone before any research text is attached, and a model handed base64 has a
+            habit of trying to hand it back.
+        </p>
+
+        <p>
+            So the images never leave the Python side. Claude receives only the chart
+            captions and is told to write <code>CHART_PLACEHOLDER_0</code>,
+            <code>CHART_PLACEHOLDER_1</code> and so on where each chart belongs; the
+            server swaps those tokens for real <code>&lt;img&gt;</code> tags after
+            generation returns. The model does layout, which is what it's good at, and
+            never touches the bytes.
+        </p>
+
+        <p>
+            The failure mode is worth naming: if the model omits a placeholder, nothing
+            errors. You get a valid report with a chart-shaped hole in it, so a missing
+            placeholder now logs a warning rather than passing silently.
+        </p>
+
+        <h3>It won't chart numbers it doesn't have</h3>
+
+        <p>
+            Price data comes from <code>yfinance</code>. Early on, a failed fetch fell
+            back to a random walk so the pipeline could keep running, which meant a
+            broken data source produced a report that looked exactly like a working one:
+            confident, formatted, and made up.
+        </p>
+
+        <p>
+            That default is now inverted. A failed price fetch <strong>stops the
+            run</strong>. Synthetic prices require an explicit
+            <code>--allow-synthetic-prices</code> flag, and when they're used the chart
+            is captioned as simulated <em>inside the report itself</em>, not just in a
+            log line nobody reads. A financial document that is silently wrong is worse
+            than no document.
+        </p>
+
+        <h2>The cleanup nobody demos</h2>
+
+        <p>
+            After the feature work slowed down I spent a pass on the parts that don't
+            show up in a demo, and it turned up more than I expected.
+        </p>
+
+        <ul class="case-list">
+            <li><strong>A directory name silently disabled a feature.</strong> The formatting server sends Claude a gallery of reference layouts to style against. It was looking for <code>reference_images/</code>; the folder was called <code>test_images/</code>. No error, no warning, just every report generated without the design references it was supposed to be using. Renaming it fixed the feature and made its real cost visible: twelve PNGs, about 770&nbsp;KB, attached to every single call.</li>
+            <li><strong>Configuration lived in two places.</strong> Keys and model settings were split across files with conflicting defaults left over from the old Gemini formatter. It's one <code>config/config.yml</code> now, resolved from each server's own <code>__file__</code> rather than the working directory, because MCP launches them as subprocesses whose cwd isn't guaranteed. Environment variables override it, so a deployment never has to write secrets to disk.</li>
+            <li><strong>The dependency list was fiction.</strong> It claimed <code>openai&gt;=1.0</code> while running 3.8 and <code>fastmcp&gt;=2.0</code> while running 3.2, listed a package that doesn't exist, and omitted five that are imported directly. Every floor is now the version actually in use, capped below the next major.</li>
+            <li><strong>An SDK upgrade removed a parameter I was still passing.</strong> Sampling parameters are gone from the Anthropic 1.x request signatures, and the current models reject them outright. Configuration that looks harmless is worse than configuration that errors, so the key is gone rather than quietly ignored.</li>
+        </ul>
+
+        <p>
+            None of this is interesting to watch. It's also the difference between a
+            project that runs on my machine and one another club member can clone on
+            Monday and have working.
         </p>
 
         <h2>Presenting it</h2>

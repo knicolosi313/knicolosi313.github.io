@@ -10,9 +10,9 @@ My personal portfolio site. Hand-built with vanilla HTML, CSS, and JavaScript. N
 
 ## About
 
-A single-page portfolio covering my background, selected projects, technical stack, and experience. The design is built around a dark "research lab" aesthetic: a deep void background with a slow-drifting aurora field, frosted glass panels, and film grain to keep the gradients from banding.
+A portfolio covering my background, selected projects, technical stack, and experience, with a dedicated case study page for each project. The design is built around a dark "research lab" aesthetic: a deep void background with a slow-drifting aurora field, frosted glass panels, and film grain to keep the gradients from banding.
 
-Everything is written by hand. There is no framework, no bundler, and no `node_modules`. The site is three files plus images, served exactly as they are written.
+Everything is written by hand. There is no framework, no bundler, and no `node_modules`. The site is plain HTML, CSS, and JavaScript plus images, served exactly as it is written.
 
 ## Design
 
@@ -23,15 +23,18 @@ Everything is written by hand. There is no framework, no bundler, and no `node_m
 
 ## Performance
 
-Total first-load payload is **71 KB**:
+Total first-load payload for the landing page is **74 KB**:
 
 | Asset | Size |
 |---|---|
-| `styles.css` | 24.4 KB |
-| `index.html` | 18.7 KB |
+| `styles.css` | 25.1 KB |
+| `index.html` | 21.2 KB |
 | `me.webp` | 15.5 KB |
 | `favicon.ico` | 6.4 KB |
 | `script.js` | 6.0 KB |
+
+Case study pages reuse `styles.css` and `script.js` from cache and add only
+`project.css` (9.1 KB) on top of their own markup.
 
 The portrait is served as WebP with a JPEG fallback through `<picture>`, sized at 2× its display slot for retina. Images carry explicit dimensions to prevent layout shift.
 
@@ -48,9 +51,15 @@ The scroll-reveal animation degrades safely: above-the-fold content is revealed 
 ## Structure
 
 ```
-├── index.html          # All markup
+├── index.html          # Landing page markup
+├── projects/           # One case study page per project
+│   ├── cramai.html
+│   ├── finrobot.html
+│   ├── cineml.html
+│   └── portfolio.html
 ├── styles/
-│   └── styles.css      # All styles, design tokens at the top
+│   ├── styles.css      # Shared styles, design tokens at the top
+│   └── project.css     # Case study layout only
 ├── javascript/
 │   └── script.js       # Reveal, scrollspy, nav, pointer glow
 ├── images/             # Portrait, favicons, social card

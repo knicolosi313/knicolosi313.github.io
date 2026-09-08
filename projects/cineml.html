@@ -54,8 +54,8 @@
         <h1 class="case-title">CineML</h1>
         <p class="case-standfirst">
             A machine learning curriculum I set for myself, working from data cleaning up
-            through neural networks, deliberately using the same 5,000 movies at every
-            stage instead of a new toy dataset for each topic.
+            through neural networks and recommender systems, deliberately using the same
+            5,000 movies at every stage instead of a new toy dataset for each topic.
         </p>
 
         <dl class="case-facts">
@@ -65,11 +65,11 @@
             </div>
             <div>
                 <dt>Status</dt>
-                <dd>7 of 9 stages complete</dd>
+                <dd>7 of 9 stages done, 8th underway</dd>
             </div>
             <div>
                 <dt>Stack</dt>
-                <dd>Python · scikit-learn · PyTorch · pandas</dd>
+                <dd>Python · scikit-learn · PyTorch · pandas · Surprise</dd>
             </div>
             <div>
                 <dt>Dataset</dt>
@@ -108,7 +108,7 @@
             </div>
             <div class="metric">
                 <div class="metric-val">1</div>
-                <div class="metric-key">Dataset throughout</div>
+                <div class="metric-key">Dataset, stages 1–6</div>
             </div>
             <div class="metric">
                 <div class="metric-val">Solo</div>
@@ -175,13 +175,52 @@
             and something another person can run.
         </p>
 
+        <h2>Stage 7: where the one-dataset rule had to bend</h2>
+
+        <p>
+            Stage 7 is recommendation systems, the natural endpoint for a movie dataset,
+            and it's the stage that broke the rule the whole project is built on.
+        </p>
+
+        <p>
+            Collaborative filtering learns from <em>who rated what</em>. It doesn't care
+            what a film is about; it cares that people who liked the ones you liked also
+            liked this other one. The TMDB set has an average rating per film and no
+            individual users at all, so there is no user-item matrix in it to factorise.
+            No amount of feature engineering conjures one. The collaborative half runs on
+            MovieLens ratings instead: an <code>SVD</code> matrix factorisation over
+            roughly 800&nbsp;MB of real user-item ratings, trained with Surprise.
+        </p>
+
+        <p>
+            The content-based half stays on the original data, and it's the more
+            satisfying one because it reuses earlier stages rather than starting over. It
+            takes the plot overviews, vectorises them with the <em>same TF-IDF vectoriser
+            saved back in stage 5</em>, and ranks films by cosine similarity between those
+            vectors. The sentiment stage's artefact became the recommender's feature
+            extractor, which is exactly the compounding that a single-dataset curriculum
+            is supposed to produce.
+        </p>
+
+        <div class="callout">
+            <p class="callout-label">The lesson in having to bring a second dataset</p>
+            <p>
+                I set the one-dataset rule to build familiarity, and it held for six
+                stages. Stage 7 is where it stopped being a virtue: some techniques have
+                a <em>shape</em> of data they require, and if your data isn't that shape,
+                the honest move is to admit it rather than to force a proxy and call the
+                result a recommender. Knowing which question a dataset simply cannot
+                answer is its own skill.
+            </p>
+        </div>
+
         <h2>Where it's going</h2>
 
         <p>
-            Stage 7 is recommendation systems (collaborative and content-based filtering),
-            which is the natural endpoint for a movie dataset. Stage 8 is a stretch list:
-            fine-tuning a transformer, computer vision, and deploying a model behind an
-            API rather than leaving it in a notebook.
+            Stage 7 is in progress: both recommenders run, and what's left is evaluation
+            and turning them into something callable rather than notebook cells. Stage 8
+            is a stretch list: fine-tuning a transformer, computer vision, and deploying a
+            model behind an API rather than leaving it in a notebook.
         </p>
 
         <p>
