@@ -50,7 +50,7 @@
 
         <a class="case-back" href="../index.html#work"><span>←</span> Back to work</a>
 
-        <p class="case-kicker">Adaptive Learning · In active development</p>
+        <p class="case-kicker">Adaptive Learning</p>
         <h1 class="case-title">CramAI</h1>
         <p class="case-standfirst">
             A study app that generates its own material and schedules it with FSRS-4.5.
@@ -65,8 +65,8 @@
                 <dd>Full-stack design &amp; build</dd>
             </div>
             <div>
-                <dt>Status</dt>
-                <dd>In active development</dd>
+                <dt>Live</dt>
+                <dd><a href="https://cram-ai.app/" target="_blank" rel="noopener">cram-ai.app ↗</a></dd>
             </div>
             <div>
                 <dt>Stack</dt>
@@ -147,13 +147,13 @@
             I originally built on the Claude API. Moving generation to OpenAI's
             <code>gpt-5.6-luna</code> cut cost by roughly <strong>5–9×</strong> at
             comparable reasoning quality for this workload. That migration then opened up
-            three further optimisations that mattered more than the swap itself.
+            further optimisations that mattered more than the swap itself.
         </p>
 
         <div class="metrics">
             <div class="metric">
                 <div class="metric-val">5–9×</div>
-                <div class="metric-key">Cost reduction</div>
+                <div class="metric-key">Cost cut, provider switch</div>
             </div>
             <div class="metric">
                 <div class="metric-val">70%</div>
@@ -168,6 +168,15 @@
                 <div class="metric-key">Cards, scaled to length</div>
             </div>
         </div>
+
+        <h3>One request, not three</h3>
+
+        <p>
+            Flashcards, a quiz, and a summary are generated in a single combined prompt
+            rather than three separate calls, each of which would re-send the same source
+            document. That's roughly <strong>3× cheaper</strong> than fanning out one call
+            per content type, and it's a separate saving from the provider switch above.
+        </p>
 
         <h3>Reasoning effort is a per-call-site decision</h3>
 
@@ -322,37 +331,6 @@
             of using it yourself will not; you stop seeing your own interface after a
             while, and the questions people ask are a much better bug report than anything
             I'd have written down alone.
-        </p>
-
-        <h2>The thing standing between this and launch</h2>
-
-        <p>
-            I want to open CramAI up to other students. The obstacle isn't technical:
-            it's that <strong>every generation is billed to my personal card.</strong>
-        </p>
-
-        <p>
-            A study app has an awkward cost profile. Usage isn't spread evenly; it spikes
-            hard in the two weeks around midterms and finals, which is exactly when the
-            app is most useful and exactly when a free tier is most expensive. Success and
-            cost are the same curve. "It got popular" and "I can't afford it" would arrive
-            in the same week.
-        </p>
-
-        <p>
-            So a paid tier is likely a requirement rather than an ambition, not to build
-            a business, but because unbounded free generation on a student budget isn't a
-            thing that can exist. That reframes the cost work on this page: the 5–9×
-            provider saving and the caching fix aren't optimisation for its own sake, they
-            directly set how much free usage is survivable and how low a paid tier could
-            reasonably start.
-        </p>
-
-        <p>
-            It's the clearest lesson the project has taught me. Beyond a certain point,
-            architecture decisions and business-model decisions stop being separate
-            conversations: the unit economics <em>are</em> a design constraint, and one
-            that shows up in the code long before it shows up on a balance sheet.
         </p>
 
         <nav class="case-nav">

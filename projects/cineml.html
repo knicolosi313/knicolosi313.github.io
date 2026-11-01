@@ -50,7 +50,7 @@
 
         <a class="case-back" href="../index.html#work"><span>←</span> Back to work</a>
 
-        <p class="case-kicker">Self-Directed ML Curriculum · In progress</p>
+        <p class="case-kicker">Self-Directed ML Curriculum</p>
         <h1 class="case-title">CineML</h1>
         <p class="case-standfirst">
             A machine learning curriculum I set for myself, working from data cleaning up
@@ -64,8 +64,8 @@
                 <dd>Solo project</dd>
             </div>
             <div>
-                <dt>Status</dt>
-                <dd>7 of 9 stages done, 8th underway</dd>
+                <dt>Code</dt>
+                <dd><a href="https://github.com/knicolosi313/CineML" target="_blank" rel="noopener">GitHub ↗</a></dd>
             </div>
             <div>
                 <dt>Stack</dt>
@@ -179,7 +179,9 @@
 
         <p>
             Stage 7 is recommendation systems, the natural endpoint for a movie dataset,
-            and it's the stage that broke the rule the whole project is built on.
+            and it's the stage that broke the rule the whole project is built on. It's
+            still in progress, so what follows is the approach rather than a finished
+            result, and it isn't in the public repository yet.
         </p>
 
         <p>
@@ -189,7 +191,7 @@
             individual users at all, so there is no user-item matrix in it to factorise.
             No amount of feature engineering conjures one. The collaborative half runs on
             MovieLens ratings instead: an <code>SVD</code> matrix factorisation over
-            roughly 800&nbsp;MB of real user-item ratings, trained with Surprise.
+            roughly 880&nbsp;MB of real user-item ratings, with a first model trained using Surprise.
         </p>
 
         <p>
@@ -217,8 +219,9 @@
         <h2>Where it's going</h2>
 
         <p>
-            Stage 7 is in progress: both recommenders run, and what's left is evaluation
-            and turning them into something callable rather than notebook cells. Stage 8
+            Stage 7 is in progress: both recommenders have a first pass, and what's left
+            is evaluation and turning them into something callable rather than notebook
+            cells. Stage 8
             is a stretch list: fine-tuning a transformer, computer vision, and deploying a
             model behind an API rather than leaving it in a notebook.
         </p>
