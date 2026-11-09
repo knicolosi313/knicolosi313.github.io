@@ -366,3 +366,9 @@
     .case-nav a { min-width: 100%; }
     .case-nav a.next { text-align: left; margin-left: 0; }
 }
+
+/* Backlogger's screenshots retain their full aspect ratio on small screens. */
+.backlogger-shot { margin: 32px 0 40px; }
+.backlogger-shot img { display: block; width: 100%; height: auto; border: 1px solid var(--edge); border-radius: var(--r-md); }
+.backlogger-shot figcaption { margin-top: 12px; color: var(--text-3); font-size: 12px; line-height: 1.65; }
+.backlogger-shot a:focus-visible { display: block; outline: 2px solid var(--cyan); outline-offset: 5px; border-radius: var(--r-md); }

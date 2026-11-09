@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backlogger | Keith Nicolosi</title>
+    <meta name="description" content="A Chrome extension that turns meeting audio into evidence-linked user stories, with board context, INVEST review, and resumable Trello and Jira exports.">
+    <meta name="theme-color" content="#08090C">
+
+    <link rel="canonical" href="https://keithnicolosi.com/projects/backlogger.html">
+    <link rel="icon" href="../images/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Backlogger | Keith Nicolosi">
+    <meta property="og:description" content="A Chrome extension that turns meeting audio into evidence-linked user stories, with board context, INVEST review, and resumable Trello and Jira exports.">
+    <meta property="og:url" content="https://keithnicolosi.com/projects/backlogger.html">
+    <meta property="og:image" content="https://keithnicolosi.com/images/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/project.css">
+</head>
+<body>
+
+    <a class="skip-link" href="#case">Skip to content</a>
+
+    <div class="aurora" aria-hidden="true">
+        <span class="blob b1"></span>
+        <span class="blob b2"></span>
+        <span class="blob b3"></span>
+        <span class="pointer-glow" id="pointer-glow"></span>
+    </div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="nav" id="nav">
+        <a class="brand" href="../index.html">
+            <span class="brand-mark">KN</span>
+            <span class="brand-name">Keith Nicolosi</span>
+        </a>
+        <div class="nav-right">
+            <a class="nav-cta" href="../index.html#work">All work</a>
+        </div>
+    </header>
+
+    <main class="case" id="case">
+
+        <a class="case-back" href="../index.html#work"><span>←</span> Back to work</a>
+
+        <p class="case-kicker">Meeting-to-Backlog Chrome Extension</p>
+        <h1 class="case-title">Backlogger</h1>
+        <p class="case-standfirst">
+            My teammate and I built Backlogger after our Introduction to Software
+            Engineering class exposed a gap in our workflow: turning meetings into
+            Trello stories took too long, and details sometimes got left behind.
+            The extension drafts evidence-linked stories from meeting audio for review
+            and export to Trello or Jira.
+        </p>
+
+        <dl class="case-facts">
+            <div><dt>Team</dt><dd>Two-person project</dd></div>
+            <div><dt>Code</dt><dd><a href="https://github.com/knicolosi313/Backlogger" target="_blank" rel="noopener">GitHub &#8599;</a></dd></div>
+            <div><dt>Stack</dt><dd>React &middot; TypeScript &middot; FastAPI &middot; SQLModel &middot; Gemini</dd></div>
+            <div><dt>Status</dt><dd>Working prototype</dd></div>
+        </dl>
+
+        <h2>The gap between the meeting and the board</h2>
+        <p>
+            In our Introduction to Software Engineering class, we were required to use
+            a Trello board to track all of our user stories and progress. My teammate
+            and I noticed that moving from a meeting to an updated board was a task
+            of its own. Turning the discussion into stories took far too long, and
+            sometimes requirements or details got left out along the way.
+        </p>
+        <p>
+            We built Backlogger to shorten that transition and keep the discussion
+            attached to the work it produced. A transcript still leaves someone
+            translating what was said into a backlog; a summary can miss the detail
+            that makes a requirement testable. We wanted the draft, its acceptance
+            criteria, and the evidence behind it in the same place, so a reviewer
+            could check the story against what was actually discussed.
+        </p>
+        <p>
+            The extension records tab and microphone audio or accepts an audio file.
+            A three-pass Gemini pipeline produces a timestamped transcript, extracts
+            stories, then critiques them against INVEST: Independent, Negotiable,
+            Valuable, Estimable, Small, and Testable. Each stage is validated against a
+            structured schema and saved in PostgreSQL, making its output inspectable
+            instead of leaving one opaque model response to explain everything.
+        </p>
+        <figure class="backlogger-shot">
+            <a href="../images/backlogger/story-review.png"><img src="../images/backlogger/story-review.png" width="1280" height="800" alt="Backlogger story review showing acceptance criteria, a source quotation, a jump-to-moment control, and INVEST checks" loading="lazy" decoding="async"></a>
+            <figcaption>The implemented review interface, with demonstration data. Each story keeps its acceptance criteria and source evidence together. Open the image for a larger view.</figcaption>
+        </figure>
+
+        <h2>A story can look good and still duplicate existing work</h2>
+        <p>
+            Checking a story by itself misses a basic problem: the board may already
+            contain it. A story for all calculator functions and a separate multiplication
+            story can each sound reasonable while covering the same scope. The review
+            needs both pieces of work in front of it to notice the containment.
+        </p>
+        <p>
+            Backlogger retrieves existing Trello or Jira work, including epic context,
+            and caches story embeddings. Similarity search selects relevant context for
+            generation and retrieves neighbors for each new draft before critique.
+            Embeddings choose candidates; they do not decide whether two stories are
+            duplicates. The review distinguishes overlap, containment, and dependency,
+            and confirmed scope findings affect the story's Independent check.
+        </p>
+        <div class="callout">
+            <p class="callout-label">Retrieval is a starting point</p>
+            <p>
+                Similar wording is not proof of duplicate scope, and different wording
+                is not proof of independence. The useful division is to retrieve broadly,
+                compare the actual requirements, and leave the evidence visible for a
+                human decision.
+            </p>
+        </div>
+
+        <h2>Creativity needs a label</h2>
+        <p>
+            Conservative, balanced, creative, and exploratory modes change how far story
+            discovery reaches beyond an explicit request. Exploratory mode actively
+            looks for additional workflows and edge cases, but a plausible suggestion
+            is still a suggestion. Drafts distinguish discussed requirements from
+            inferred scope and proposed ideas, with assumptions and clarification needs
+            carried through to review.
+        </p>
+        <p>
+            Reviewers can accept, edit, request changes, reject, or restore drafts. They
+            can inspect the source quote and play the meeting audio at its timestamp
+            without opening a separate web application. Board metrics are calculated
+            from stored records rather than asking a model to invent percentages.
+        </p>
+        <figure class="backlogger-shot">
+            <a href="../images/backlogger/drafts.png"><img src="../images/backlogger/drafts.png" width="1280" height="800" alt="Backlogger draft list with review filters, confidence scores, and quality badges" loading="lazy" decoding="async"></a>
+            <figcaption>Draft triage in the actual extension UI. Counts and stories are synthetic demonstration data, not usage results.</figcaption>
+        </figure>
+
+        <h2>The retry is part of the feature</h2>
+        <p>
+            Creating a ticket is easy until the provider creates it and the connection
+            drops before the backend receives the response. Sending the same request
+            again can create a duplicate; assuming it failed loses track of the work.
+            Export therefore has its own database record and a stable per-story
+            idempotency key, with the external identifier saved as soon as it is known.
+        </p>
+        <p>
+            Trello exports reconcile previously created cards and add missing checklist
+            items without resetting completed checks. Jira exports use an import marker
+            to find an issue from an earlier attempt. If creation remains uncertain,
+            Backlogger refuses to blindly create another ticket. Partial failures stay
+            visible, and retries reuse completed work.
+        </p>
+        <p>
+            Manual and automatic exports process up to three stories concurrently for
+            either provider. Each automatic export owns its database session and client,
+            while Jira's account lock protects token refresh rather than the whole
+            export. HTTP connections are reused, and Jira rate-limit responses pause
+            subsequent calls in that backend process. Faster exports still have to
+            preserve the same duplicate-prevention rules.
+        </p>
+
+        <h2>What runs where</h2>
+        <ul class="case-list">
+            <li><strong>Chrome side panel:</strong> WXT, React, and TypeScript handle recording, review, settings, and in-panel audio playback.</li>
+            <li><strong>Backend:</strong> FastAPI coordinates processing, browser-scoped provider authorization, and exports. Connection tokens are encrypted before database storage.</li>
+            <li><strong>Storage:</strong> TigerData PostgreSQL holds transcripts, stories, reviews, embeddings, and export records through SQLModel. Supabase stores audio in a private bucket, with playback served through the backend.</li>
+            <li><strong>Verification:</strong> Tests cover structured pipeline output, database constraints, account connections, export reconciliation, concurrent imports, and extension interactions. Provider calls are mocked for repeatable regression tests.</li>
+        </ul>
+
+        <h2>What still needs work</h2>
+        <p>
+            This is a working prototype, not a claim of production readiness. Meeting
+            data currently belongs to a shared backend workspace without per-user
+            isolation. Authentication and authorization, a defined retention policy,
+            and durable background processing are the next pieces needed before
+            handling private customer meetings. A private storage bucket alone does
+            not solve access control at the API.
+        </p>
+
+        <nav class="case-nav" aria-label="Other projects">
+            <a class="prev" href="cramai.html"><span class="nav-dir">&#8592; Previous</span><span class="nav-name">CramAI</span></a>
+            <a class="next" href="finrobot.html"><span class="nav-dir">Next &#8594;</span><span class="nav-name">FinRobot</span></a>
+        </nav>
+    </main>
+    <script src="../javascript/script.js"></script>
+</body>
+</html>
